@@ -27,7 +27,7 @@ def main():
                     # Check exact match first (for files that already have extension)
                     full_path = f"{dir}/{message}"
                     if os.access(full_path, os.X_OK):
-                        print(f"{message} is a {full_path}")
+                        print(f"{message} is {full_path}")
                         found = True
                         break
                     
@@ -35,7 +35,7 @@ def main():
                     for ext in pathext:
                         full_path_ext = f"{dir}/{message}{ext}"
                         if os.access(full_path_ext, os.X_OK):
-                            print(f"{message} is a {full_path_ext}")
+                            print(f"{message} is {full_path_ext}")
                             found = True
                             break
                     if found:
