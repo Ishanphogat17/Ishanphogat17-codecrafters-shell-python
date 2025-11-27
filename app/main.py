@@ -1,6 +1,8 @@
 import sys
+import os
 
-
+BUILTINS = ['echo', 'type','error']
+DIRS = os.environ['PATH'].split(os.pathsep)
 def main():
     # TODO: Uncomment the code below to pass the first stage
     while True:
@@ -15,8 +17,13 @@ def main():
 
         elif command.startswith('type '):
             message = command[5:]
-            if message == "exit" or message == "type" or message == "echo":
+            if message in BUILTINS:
                 print(f"{message} is a shell builtin")
+            elif message in DIRS:
+                for dir in DIRS:
+                    if os.access(f"{dir}/{message}", os.X_OK):
+                        print(f"{message} is a {dir}/{message}")
+                        return
             else:
                 print(f"{message}: not found")
         else:
