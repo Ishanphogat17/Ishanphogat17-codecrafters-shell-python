@@ -11,8 +11,8 @@ def main():
         if command.startswith('echo '):
             message = command[5:]
             print(message)
-        else:
-            print(f"{command}: command not found")
+        #else:
+        #    print(f"{command}: command not found")
 
         if command.startswith('type '):
             message = command[5:]
@@ -21,7 +21,7 @@ def main():
             else:
                 print(f"{message}: not found")
         else:
-            print(f"{command}: not found")
+            print(f"{command}:command not found")
 
 if __name__ == "__main__":
     main()
