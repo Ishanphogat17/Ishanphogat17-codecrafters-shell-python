@@ -10,7 +10,8 @@ def main():
             break
         if command.startswith('echo '):
             message = command[5:]
-            print(message)
+            print(f"{command}: command not found")
+            #print(message)
         #else:
         #    print(f"{command}: command not found")
 
