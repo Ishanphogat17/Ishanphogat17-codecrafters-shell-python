@@ -1,7 +1,7 @@
 import sys
 import os
 
-BUILTINS = ['echo', 'type','error']
+BUILTINS = ['echo', 'type','exit']
 DIRS = os.environ['PATH'].split(os.pathsep)
 #print(DIRS)
 def main():
