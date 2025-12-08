@@ -83,9 +83,10 @@ def main():
             if found_executable:
                 try:
                     # Execute the program with arguments
-                    subprocess.run([found_executable] + exe_args)
+                    executable_name = os.path.basename(found_executable)
+                    subprocess.run([executable_name] + exe_args)
                 except Exception as e:
-                    print(f"{exe_name}: execution failed: {e}")
+                    print(f"{executable_name}: execution failed: {e}")
             else:
                 print(f"{exe_name}: command not found")
 
