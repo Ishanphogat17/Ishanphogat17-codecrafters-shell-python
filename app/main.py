@@ -3,8 +3,8 @@ import os
 import subprocess
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
-def pwd(args):
-    print(os.getcwd(args))
+def pwd():
+    print(os.getcwd())
 
 def find_in_path(executable_name):
     """
@@ -75,8 +75,6 @@ def main():
             break
         if command == "pwd":
             pwd()
-            continue
-            
         if command.startswith('echo '):
             handle_echo(command[5:])
         elif command.startswith('type '):
