@@ -73,12 +73,13 @@ def main():
 
         if command == "exit":
             break
-        if command.startswith("pwd"):
-            pwd()
+        
         if command.startswith('echo '):
             handle_echo(command[5:])
         elif command.startswith('type '):
             handle_type(command[5:])
+        elif command.startswith('pwd '):
+            pwd()
         else:
             parts = command.split()
             exe_name = parts[0]
