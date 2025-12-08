@@ -6,10 +6,9 @@ BUILTINS = ['echo', 'type', 'exit', 'pwd']
 def pwd():
     print(os.getcwd())
 def handle_cd(path):
-    if not path:  # Empty path
-        path = os.path.expanduser("~")
+    expanded_path = os.path.expanduser(path)
     try:
-        os.chdir(path)
+        os.chdir(expanded_path)
     except FileNotFoundError:
         print(f"cd: {path}: No such file or directory")
 def find_in_path(executable_name):
@@ -88,6 +87,8 @@ def main():
             pwd()
         elif command.startswith("cd "):
             path = command[3:].strip()
+            if not path:  # Empty path
+                path = os.path.expanduser("~")
             
             handle_cd(path)
         else:
