@@ -38,7 +38,7 @@ def main():
                     # Check exact match first
                     full_path = os.path.join(directory, target)
                     if os.access(full_path, os.X_OK) and not os.path.isdir(full_path):
-                        #print(f"{target} is {full_path}")
+                        print(f"{target} is {full_path}")
                         found = True
                         break
                     
@@ -47,7 +47,7 @@ def main():
                         if not ext: continue
                         full_path_ext = full_path + ext
                         if os.access(full_path_ext, os.X_OK) and not os.path.isdir(full_path_ext):
-                            #print(f"{target} is {full_path_ext}")
+                            print(f"{target} is {full_path_ext}")
                             found = True
                             break
                     if found:
