@@ -73,7 +73,7 @@ def main():
 
         if command == "exit":
             break
-        if command == "pwd":
+        if command.startswith("pwd"):
             pwd()
         if command.startswith('echo '):
             handle_echo(command[5:])
