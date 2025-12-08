@@ -2,7 +2,7 @@ import sys
 import os
 import subprocess
 
-BUILTINS = ['echo', 'type', 'exit']
+BUILTINS = ['echo', 'type', 'exit', 'pwd']
 
 def find_in_path(executable_name):
     """
