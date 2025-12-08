@@ -5,7 +5,11 @@ import subprocess
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
 def pwd():
     print(os.getcwd())
-
+def handle_cd(path):
+    try:
+        os.chdir(path)
+    except FileNotFoundError:
+        print(f"cd: {path}: No such file or directory")
 def find_in_path(executable_name):
     """
     Searches for an executable in the directories listed in the PATH environment variable.
@@ -80,6 +84,9 @@ def main():
             handle_type(command[5:])
         elif command == 'pwd':
             pwd()
+        elif command.startswith("cd "):
+            path = command[3:].strip()
+            handle_cd(path)
         else:
             parts = command.split()
             exe_name = parts[0]
