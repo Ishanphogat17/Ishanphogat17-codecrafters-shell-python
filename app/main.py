@@ -6,6 +6,8 @@ BUILTINS = ['echo', 'type', 'exit', 'pwd']
 def pwd():
     print(os.getcwd())
 def handle_cd(path):
+    if not path:  # Empty path
+        path = os.path.expanduser("~")
     try:
         os.chdir(path)
     except FileNotFoundError:
@@ -86,6 +88,7 @@ def main():
             pwd()
         elif command.startswith("cd "):
             path = command[3:].strip()
+            
             handle_cd(path)
         else:
             parts = command.split()
