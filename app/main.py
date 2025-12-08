@@ -78,7 +78,7 @@ def main():
             handle_echo(command[5:])
         elif command.startswith('type '):
             handle_type(command[5:])
-        elif command.startswith('pwd '):
+        elif command == 'pwd':
             pwd()
         else:
             parts = command.split()
