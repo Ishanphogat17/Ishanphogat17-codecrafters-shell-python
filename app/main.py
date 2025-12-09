@@ -73,8 +73,24 @@ def handle_echo(args):
     # Don't forget the last argument
     if current:
         arguments.append(''.join(current))
-    
+        
+    return arguments
+
+def handle_echo(args):
+    """Handles the echo command with proper quote parsing."""
+    arguments = parse_arguments(args)
     print(' '.join(arguments))
+
+def handle_cat(args):
+    """Handles the cat command."""
+    files = parse_arguments(args)
+    for filename in files:
+        if not filename: continue
+        try:
+            with open(filename, 'r') as f:
+                sys.stdout.write(f.read())
+        except FileNotFoundError:
+            print(f"cat: {filename}: No such file or directory")
     
 def handle_type(args):
     """Handles the type command."""
@@ -122,6 +138,8 @@ def main():
             handle_echo(command[5:])
         elif command.startswith('type '):
             handle_type(command[5:])
+        elif command.startswith('cat '):
+            handle_cat(command[4:])
         elif command == 'pwd':
             pwd()
         elif command.startswith("cd "):
