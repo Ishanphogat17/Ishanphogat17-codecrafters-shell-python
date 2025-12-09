@@ -70,6 +70,32 @@ def handle_echo(args):
                     # End of quoted section
                     in_quotes = False
                     i += 1
+        '''elif args[i].isspace() and not in_quotes:
+            # End of current argument
+            if current:
+                arguments.append(''.join(current))
+                current = []
+            # Skip all spaces between arguments
+            while i < len(args) and args[i].isspace():
+                i += 1
+        else:
+            current.append(args[i])
+            i += 1
+        '''
+        elif args[i] == '"':
+            if not in_quotes:
+                # Start of quoted section
+                in_quotes = True
+                i += 1
+            else:
+                # Inside quotes, check if it's an empty quote pair
+                if i + 1 < len(args) and args[i + 1] == '"':
+                    # Skip empty quotes
+                    i += 2
+                else:
+                    # End of quoted section
+                    in_quotes = False
+                    i += 1
         elif args[i].isspace() and not in_quotes:
             # End of current argument
             if current:
@@ -81,7 +107,7 @@ def handle_echo(args):
         else:
             current.append(args[i])
             i += 1
-    
+
     # Don't forget the last argument
     if current:
         arguments.append(''.join(current))
