@@ -3,14 +3,17 @@ import os
 import subprocess
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
+
 def pwd():
     print(os.getcwd())
+
 def handle_cd(path):
     expanded_path = os.path.expanduser(path)
     try:
         os.chdir(expanded_path)
     except FileNotFoundError:
         print(f"cd: {path}: No such file or directory")
+
 def find_in_path(executable_name):
     """
     Searches for an executable in the directories listed in the PATH environment variable.
@@ -35,7 +38,19 @@ def find_in_path(executable_name):
 
 def handle_echo(args):
     """Handles the echo command."""
-    print(args)
+    if len(args) >= 2 and args[0] == "'" and args[-1] == "'":
+        
+        content = args[1:-1]
+        
+        content = content.replace("''", "")
+        print(content)
+    else:
+        
+        content = args.replace("''", "")
+       
+        output = ' '.join(content.split())
+        print(output)
+
 
 def handle_type(args):
     """Handles the type command."""
