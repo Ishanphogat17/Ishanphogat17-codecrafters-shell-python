@@ -70,18 +70,7 @@ def handle_echo(args):
                     # End of quoted section
                     in_quotes = False
                     i += 1
-        '''elif args[i].isspace() and not in_quotes:
-            # End of current argument
-            if current:
-                arguments.append(''.join(current))
-                current = []
-            # Skip all spaces between arguments
-            while i < len(args) and args[i].isspace():
-                i += 1
-        else:
-            current.append(args[i])
-            i += 1
-        '''
+
         elif args[i] == '"':
             if not in_quotes:
                 # Start of quoted section
