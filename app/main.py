@@ -37,57 +37,88 @@ def find_in_path(executable_name):
     return None
 
 def handle_echo(args):
-    """Handles the echo command."""
-    # Case 1: Entire string is quoted
-    if args.startswith("'") and args.endswith("'"):
-        # Remove outer quotes and print literally
-        print(args[1:-1])
-        return
-    
-    # Case 2: Handle concatenated quoted strings and mixed content
-    result_parts = []
+    """Handles the echo command with proper quote parsing."""
+    arguments = []
+    current = []
+    in_quotes = False
     i = 0
-    length = len(args)
     
-    while i < length:
+    while i < len(args):
         if args[i] == "'":
-            # Find closing quote
-            j = i + 1
-            quote_count = 1
-            while j < length:
-                if args[j] == "'":
-                    quote_count += 1
-                    if quote_count % 2 == 0:  # Found matching quote
-                        break
-                j += 1
-            
-            if j < length:
-                # Extract content preserving spaces
-                quoted_content = args[i+1:j]
-                result_parts.append(quoted_content)
-                i = j + 1
+            if not in_quotes:
+                # Start of quoted section
+                in_quotes = True
+                i += 1
             else:
-                # No closing quote, skip
+                # Inside quotes, check if it's an empty quote pair
+                if i + 1 < len(args) and args[i + 1] == "'":
+                    # Skip empty quotes
+                    i += 2
+                else:
+                    # End of quoted section
+                    in_quotes = False
+                    i += 1
+        elif args[i].isspace() and not in_quotes:
+            # End of current argument
+            if current:
+                arguments.append(''.join(current))
+                current = []
+            # Skip all spaces between arguments
+            while i < len(args) and args[i].isspace():
                 i += 1
         else:
-            # Collect non-quoted characters
-            start = i
-            while i < length and args[i] != "'":
-                i += 1
-            non_quoted = args[start:i]
-            # Normalize whitespace for non-quoted parts
-            normalized = ' '.join(non_quoted.split())
+            current.append(args[i])
+            i += 1
+    
+    # Don't forget the last argument
+    if current:
+        arguments.append(''.join(current))
+    
+    # Process each argument
+    result_parts = []
+    for arg in arguments:
+        # Remove empty quotes
+        arg = arg.replace("''", "")
+        
+        # Check if argument contains quoted segments
+        if "'" in arg:
+            # Parse quoted and unquoted segments
+            segments = []
+            j = 0
+            while j < len(arg):
+                if arg[j] == "'":
+                    # Find closing quote
+                    k = j + 1
+                    while k < len(arg) and arg[k] != "'":
+                        k += 1
+                    if k < len(arg):
+                        # Add quoted content as-is
+                        segments.append(arg[j+1:k])
+                        j = k + 1
+                    else:
+                        j += 1
+                else:
+                    # Non-quoted text
+                    start = j
+                    while j < len(arg) and arg[j] != "'":
+                        j += 1
+                    text = arg[start:j]
+                    if text:
+                        # Normalize whitespace in non-quoted text
+                        normalized = ' '.join(text.split())
+                        if normalized:
+                            segments.append(normalized)
+            
+            result_parts.append(''.join(segments))
+        else:
+            # No quotes, just normalize whitespace
+            normalized = ' '.join(arg.split())
             if normalized:
                 result_parts.append(normalized)
     
-    # Join all parts
-    final_output = ''.join(result_parts)
+    # Join all arguments with single space
+    print(' '.join(result_parts))
     
-    # Remove empty quotes (consecutive single quotes)
-    final_output = final_output.replace("''", "")
-    
-    print(final_output)
-
 def handle_type(args):
     """Handles the type command."""
     target = args
