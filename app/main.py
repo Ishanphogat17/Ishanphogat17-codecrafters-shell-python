@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import shlex
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
 
