@@ -74,50 +74,7 @@ def handle_echo(args):
     if current:
         arguments.append(''.join(current))
     
-    # Process each argument
-    result_parts = []
-    for arg in arguments:
-        # Remove empty quotes
-        arg = arg.replace("''", "")
-        
-        # Check if argument contains quoted segments
-        if "'" in arg:
-            # Parse quoted and unquoted segments
-            segments = []
-            j = 0
-            while j < len(arg):
-                if arg[j] == "'":
-                    # Find closing quote
-                    k = j + 1
-                    while k < len(arg) and arg[k] != "'":
-                        k += 1
-                    if k < len(arg):
-                        # Add quoted content as-is
-                        segments.append(arg[j+1:k])
-                        j = k + 1
-                    else:
-                        j += 1
-                else:
-                    # Non-quoted text
-                    start = j
-                    while j < len(arg) and arg[j] != "'":
-                        j += 1
-                    text = arg[start:j]
-                    if text:
-                        # Normalize whitespace in non-quoted text
-                        normalized = ' '.join(text.split())
-                        if normalized:
-                            segments.append(normalized)
-            
-            result_parts.append(''.join(segments))
-        else:
-            # No quotes, just normalize whitespace
-            normalized = ' '.join(arg.split())
-            if normalized:
-                result_parts.append(normalized)
-    
-    # Join all arguments with single space
-    print(' '.join(result_parts))
+    print(' '.join(arguments))
     
 def handle_type(args):
     """Handles the type command."""
