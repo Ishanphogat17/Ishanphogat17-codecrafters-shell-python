@@ -136,7 +136,8 @@ def main():
         elif command == 'pwd':
             pwd()
         elif command.startswith('cat '):
-            handle_cat(command[4:])
+            args = shlex.split(command[4:])
+            handle_cat(args)
         elif command.startswith("cd "):
             path = command[3:].strip()
             if not path:  # Empty path
