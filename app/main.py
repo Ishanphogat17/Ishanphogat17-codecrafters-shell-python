@@ -4,6 +4,17 @@ import subprocess
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
 
+def handle_cat(args):
+    """Handles the cat command."""
+    files = args
+    for filename in files:
+        if not filename: continue
+        try:
+            with open(filename, 'r') as f:
+                sys.stdout.write(f.read())
+        except FileNotFoundError:
+            print(f"cat: {filename}: No such file or directory")
+
 def pwd():
     print(os.getcwd())
 
@@ -124,6 +135,8 @@ def main():
             handle_type(command[5:])
         elif command == 'pwd':
             pwd()
+        elif command.startswith('cat '):
+            handle_cat(command[4:])
         elif command.startswith("cd "):
             path = command[3:].strip()
             if not path:  # Empty path
