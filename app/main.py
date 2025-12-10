@@ -5,6 +5,48 @@ import shlex
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
 
+def stdout_stderr(args):
+    """Handle stdout and stderr redirection with >, 2>, and >> operators"""
+    
+    try:
+        # Check for stderr redirection (2>)
+        if "2>" in args:
+            cmd_part, file_part = args.split("2>", 1)
+            result = subprocess.run(cmd_part.strip(), shell=True, capture_output=True, text=True)
+            with open(file_part.strip(), "w") as f: 
+                f.write(result.stderr)
+            if result.stdout:
+                print(result.stdout, end='')
+        
+        # Check for stdout append redirection (>>)
+        elif ">>" in args:
+            cmd_part, file_part = args.split(">>", 1)
+            result = subprocess.run(cmd_part.strip(), shell=True, capture_output=True, text=True)
+            with open(file_part.strip(), "a") as f:
+                f.write(result.stdout)
+            if result.stderr:
+                print(result.stderr, end='')
+        
+        # Check for stdout overwrite redirection (>)
+        elif ">" in args:
+            cmd_part, file_part = args.split(">", 1)
+            result = subprocess.run(cmd_part.strip(), shell=True, capture_output=True, text=True)
+            with open(file_part.strip(), "w") as f:
+                f.write(result.stdout)
+            if result.stderr:
+                print(result.stderr, end='')
+        
+        # No redirection - FIXED: using args instead of cmd
+        else:
+            subprocess.run(args, shell=True)
+            
+    except FileNotFoundError as e:
+        print(f"File error: {e}")
+    except PermissionError as e:
+        print(f"Permission denied: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
+        
 def handle_cat(args):
     """Handles the cat command."""
     files = args
@@ -184,7 +226,8 @@ def main():
 
         if exe_name == "exit":
             break
-        
+        elif "2>" or ">" or ">>" in args:
+            stdout_stderr(command)
         elif exe_name == 'echo':
             handle_echo(args)
         elif exe_name == 'type':
