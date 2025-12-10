@@ -132,13 +132,13 @@ def parse_arguments(args):
     return arguments
 
 def handle_echo(args):
-    """Handles the echo command with proper quote parsing."""
-    arguments = parse_arguments(args)
-    print(' '.join(arguments))
+    """Handles the echo command."""
+    print(' '.join(args))
     
 def handle_type(args):
     """Handles the type command."""
-    target = args
+    if not args: return
+    target = args[0]
     if target in BUILTINS:
         print(f"{target} is a shell builtin")
     else:
@@ -174,30 +174,30 @@ def main():
             
         if not command:
             continue
+            
+        parts = parse_arguments(command)
+        if not parts:
+            continue
+            
+        exe_name = parts[0]
+        args = parts[1:]
 
-        if command == "exit":
+        if exe_name == "exit":
             break
         
-        if command.startswith('echo '):
-            handle_echo(command[5:])
-        elif command.startswith('type '):
-            handle_type(command[5:])
-        elif command == 'pwd':
+        elif exe_name == 'echo':
+            handle_echo(args)
+        elif exe_name == 'type':
+            handle_type(args)
+        elif exe_name == 'pwd':
             pwd()
-        elif command.startswith('cat '):
-            args = shlex.split(command[4:])
+        elif exe_name == 'cat':
             handle_cat(args)
-        elif command.startswith("cd "):
-            path = command[3:].strip()
-            if not path:  # Empty path
-                path = os.path.expanduser("~")
-            
+        elif exe_name == 'cd':
+            path = args[0] if args else os.path.expanduser("~")
             handle_cd(path)
         else:
-            parts = command.split()
-            exe_name = parts[0]
-            exe_args = parts[1:]
-            handle_external(exe_name, exe_args)
+            handle_external(exe_name, args)
 
 if __name__ == "__main__":
     main()
