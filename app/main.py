@@ -105,7 +105,14 @@ def parse_arguments(args):
                  # Let's try manual first to be safe with specific "echo" behavior if needed, 
                  # but correct logic is:
                  current.append(char)
-                 i += 2
+                 i += 1
+             elif char == '\"': # Handle backslash escapes
+                 if in_single_quotes:
+                     current.append(char)
+                     i += 1
+                 elif in_double_quotes:
+                     current.append(char)
+                     i += 1
              else:
                  # Outside quotes, backslash escapes next char including space
                  if i + 1 < len(args):
