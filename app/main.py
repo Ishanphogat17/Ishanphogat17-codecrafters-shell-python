@@ -105,7 +105,7 @@ def parse_arguments(args):
                  # Let's try manual first to be safe with specific "echo" behavior if needed, 
                  # but correct logic is:
                  current.append(char)
-                 i += 1
+                 i += 2
              else:
                  # Outside quotes, backslash escapes next char including space
                  if i + 1 < len(args):
