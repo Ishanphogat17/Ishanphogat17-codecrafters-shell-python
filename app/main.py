@@ -86,41 +86,30 @@ def parse_arguments(args):
                 in_double_quotes = True
                 i += 1
         elif char == '\\': # Handle backslash escapes
-             if in_single_quotes:
-                 current.append(char)
-                 i += 1
-             elif in_double_quotes:
-                 # In double quotes, backslash escapes specific chars, but for this level
-                 # we might just treat it as literal or simple escape. 
-                 # Given the test failure "hello's", we just need quote separation.
-                 # Let's simple-handle: if next is special, escape it?
-                 # Actually, shell behavior: \ inside "" only escapes $ ` " \ and newline.
-                 # Example failure suggests simple quote handling first.
-                 # Let's append literal backslash unless we strictly need escape logic.
-                 # But wait, `shlex` handles this. The user used `shlex` for cat. 
-                 # Can we just use `shlex`?
-                 # `shlex.split` handles quotes effectively.
-                 # If allowed, replacing naive loop with `shlex.split` is best.
-                 # The user imported `shlex`.
-                 # Let's try manual first to be safe with specific "echo" behavior if needed, 
-                 # but correct logic is:
-                 current.append(char)
-                 i += 1
-             elif char == '\"': # Handle backslash escapes
-                 if in_single_quotes:
-                     current.append(char)
-                     i += 1
-                 elif in_double_quotes:
-                     current.append(char)
-                     i += 1
-             else:
-                 # Outside quotes, backslash escapes next char including space
-                 if i + 1 < len(args):
-                     current.append(args[i+1])
-                     i += 2
-                 else:
-                     current.append(char)
-                     i += 1
+            if in_single_quotes:
+                current.append('\\')
+                i += 1
+            elif in_double_quotes:
+                # Inside double quotes, backslash needs to handle \" and \\ and maybe \n but mostly literal otherwise
+                if i + 1 < len(args):
+                    next_char = args[i+1]
+                    if next_char == '"' or next_char == '\\':
+                         current.append(next_char)
+                         i += 2
+                    else:
+                        current.append('\\')
+                        i += 1
+                else:
+                    current.append('\\')
+                    i += 1
+            else:
+                # Outside quotes, backslash escapes next char including space
+                if i + 1 < len(args):
+                    current.append(args[i+1])
+                    i += 2
+                else:
+                    current.append('\\')
+                    i += 1
         elif char.isspace():
             if in_single_quotes or in_double_quotes:
                 current.append(char)
