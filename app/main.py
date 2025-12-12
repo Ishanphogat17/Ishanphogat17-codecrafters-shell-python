@@ -9,8 +9,16 @@ def stdout_stderr(args):
     """Handle stdout and stderr redirection with >, 2>, and >> operators"""
     
     try:
-        # Check for stderr redirection (2>)
-        if "2>" in args:
+        # Check for stdout redirection (1>)
+        if "1>" in args:
+            cmd_part, file_part = args.split("1>", 1)
+            result = subprocess.run(cmd_part.strip(), shell=True, capture_output=True, text=True)
+            with open(file_part.strip(), "w") as f:
+                f.write(result.stdout)
+            if result.stderr:
+                print(result.stderr, end='')
+            
+        elif "2>" in args:
             cmd_part, file_part = args.split("2>", 1)
             result = subprocess.run(cmd_part.strip(), shell=True, capture_output=True, text=True)
             with open(file_part.strip(), "w") as f: 
@@ -28,7 +36,7 @@ def stdout_stderr(args):
                 print(result.stderr, end='')
         
         # Check for stdout overwrite redirection (>)
-        elif ">" or "1>" in args:
+        elif ">" in args:
             cmd_part, file_part = args.split(">", 1)
             result = subprocess.run(cmd_part.strip(), shell=True, capture_output=True, text=True)
             with open(file_part.strip(), "w") as f:
