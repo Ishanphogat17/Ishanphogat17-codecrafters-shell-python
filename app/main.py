@@ -216,6 +216,10 @@ def main():
             
         if not command:
             continue
+
+        if any(op in command for op in ['2>', '>>', '>','1>']):
+            stdout_stderr(command)
+            continue  
             
         parts = parse_arguments(command)
         if not parts:
@@ -226,8 +230,6 @@ def main():
 
         if exe_name == "exit":
             break
-        elif "2>" or ">" or ">>" in args:
-            stdout_stderr(command)
         elif exe_name == 'echo':
             handle_echo(args)
         elif exe_name == 'type':
