@@ -28,7 +28,7 @@ def stdout_stderr(args):
                 print(result.stderr, end='')
         
         # Check for stdout overwrite redirection (>)
-        elif ">" in args:
+        elif ">" or "1>" in args:
             cmd_part, file_part = args.split(">", 1)
             result = subprocess.run(cmd_part.strip(), shell=True, capture_output=True, text=True)
             with open(file_part.strip(), "w") as f:
