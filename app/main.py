@@ -10,16 +10,16 @@ def stdout_stderr(args):
     
     try:
         # Check for stdout redirection (1>)
-        if "2>>" in command_str:  # If you want to support stderr append
-            cmd_part, file_part = command_str.split("2>>", 1)
+        if "2>>" in args:  # If you want to support stderr append
+            cmd_part, file_part = args.split("2>>", 1)
             result = subprocess.run(cmd_part.strip(), shell=True, capture_output=True, text=True)
             with open(file_part.strip(), "a") as f: 
                 f.write(result.stderr)
             if result.stdout:
                 print(result.stdout, end='')
         
-        elif "1>>" in command_str:  # NEW: Handle 1>> (stdout append)
-            cmd_part, file_part = command_str.split("1>>", 1)
+        elif "1>>" in args:  # NEW: Handle 1>> (stdout append)
+            cmd_part, file_part = args.split("1>>", 1)
             result = subprocess.run(cmd_part.strip(), shell=True, capture_output=True, text=True)
             with open(file_part.strip(), "a") as f:
                 f.write(result.stdout)
