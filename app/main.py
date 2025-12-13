@@ -5,7 +5,7 @@ import shlex
 import readline
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
-
+executables = set()
 
 
 def completer(text, state):
@@ -264,7 +264,6 @@ def handle_external(command_name, args):
 
 def main():
     setup_autocomplete()
-    executables = set()
     while True:
         sys.stdout.write("$ ")
         sys.stdout.flush()
