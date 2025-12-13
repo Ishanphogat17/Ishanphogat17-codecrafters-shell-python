@@ -12,10 +12,10 @@ def completer(text, state):
 
     # List of commands to autocomplete
     commands = [cmd + ' ' for cmd in BUILTINS]
-    
+    all_commands = commands + list(executables)
     # Filter commands that start with the current text
     matches = []
-    for cmd in commands:
+    for cmd in all_commands:
         if cmd.startswith(text):
             matches.append(cmd)
     
@@ -135,6 +135,7 @@ def find_in_path(executable_name):
         # Check exact match first
         full_path = os.path.join(directory, executable_name)
         if os.access(full_path, os.X_OK) and not os.path.isdir(full_path):
+            executables.add(full_path)
             return full_path
         
         # Check with extensions
@@ -142,6 +143,7 @@ def find_in_path(executable_name):
             if not ext: continue
             full_path_ext = full_path + ext
             if os.access(full_path_ext, os.X_OK) and not os.path.isdir(full_path_ext):
+                executables.add(full_path_ext)
                 return full_path_ext
     return None
 
@@ -262,6 +264,7 @@ def handle_external(command_name, args):
 
 def main():
     setup_autocomplete()
+    executables = set()
     while True:
         sys.stdout.write("$ ")
         sys.stdout.flush()
