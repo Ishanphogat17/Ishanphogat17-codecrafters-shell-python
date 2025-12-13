@@ -5,14 +5,51 @@ import shlex
 import readline
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
-executables = set()
 
+
+
+def get_path_executables():
+    """Scans directories in PATH for executable files."""
+    executables = set()
+    path_dirs = os.environ.get('PATH', '').split(os.pathsep)
+    pathext = os.environ.get('PATHEXT', '').split(os.pathsep) if os.name == 'nt' else ['']
+
+    for directory in path_dirs:
+        if not os.path.isdir(directory):
+            continue
+        try:
+            for filename in os.listdir(directory):
+                # On Windows, we can check extensions. On POSIX, check X_OK.
+                full_path = os.path.join(directory, filename)
+                if os.name == 'nt':
+                    # Check if file has an executable extension
+                    base, ext = os.path.splitext(filename)
+                    if ext.upper() in [e.upper() for e in pathext if e]:
+                         executables.add(base) # Add base name for autocomplete
+                    elif not ext and filename in executables: # Already added via another extension
+                         pass
+                    
+                    # Also checking specific extensions for strict correctness might be too slow or complex
+                    # simpler: just add everything that matches PATHEXT logic
+                     
+                elif os.access(full_path, os.X_OK) and not os.path.isdir(full_path):
+                     executables.add(filename)
+        except OSError:
+            continue
+            
+    return executables
 
 def completer(text, state):
 
     # List of commands to autocomplete
     commands = [cmd + ' ' for cmd in BUILTINS]
-    all_commands = commands + list(executables)
+    
+    path_execs = list(get_path_executables()) 
+    # Add a space to path executables too for consistency
+    path_execs = [cmd + ' ' for cmd in path_execs]
+    
+    all_commands = sorted(list(set(commands + path_execs))) # Deduplicate and sort
+    
     # Filter commands that start with the current text
     matches = []
     for cmd in all_commands:
@@ -135,7 +172,6 @@ def find_in_path(executable_name):
         # Check exact match first
         full_path = os.path.join(directory, executable_name)
         if os.access(full_path, os.X_OK) and not os.path.isdir(full_path):
-            executables.add(full_path)
             return full_path
         
         # Check with extensions
@@ -143,7 +179,6 @@ def find_in_path(executable_name):
             if not ext: continue
             full_path_ext = full_path + ext
             if os.access(full_path_ext, os.X_OK) and not os.path.isdir(full_path_ext):
-                executables.add(full_path_ext)
                 return full_path_ext
     return None
 
