@@ -5,6 +5,45 @@ import shlex
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
 
+import readline
+
+def completer(text, state):
+    """
+    Autocompleter function for readline.
+    
+    Args:
+        text: The current text being completed
+        state: The current state (0 for first call, increments for each match)
+    
+    Returns:
+        The next matching command or None when no more matches
+    """
+    # List of commands to autocomplete
+    commands = ['echo', 'exit']
+    
+    # Filter commands that start with the current text
+    matches = []
+    for cmd in commands:
+        if cmd.startswith(text):
+            matches.append(cmd)
+    
+    # Return the match corresponding to the current state
+    if state < len(matches):
+        return matches[state]
+    return None
+
+
+def setup_autocomplete():
+    """Initialize readline with our completer function."""
+    # Set the completer function
+    readline.set_completer(completer)
+    
+    # Set the delimiter characters (characters that separate words)
+    readline.set_completer_delims(' \t\n')
+    
+    # Enable tab completion
+    readline.parse_and_bind('tab: complete')
+
 def stdout_stderr(args):
     """Handle stdout and stderr redirection with >, 2>, and >> operators"""
     
