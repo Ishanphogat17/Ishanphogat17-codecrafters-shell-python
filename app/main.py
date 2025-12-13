@@ -2,24 +2,16 @@ import sys
 import os
 import subprocess
 import shlex
+import readline
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
 
-import readline
+
 
 def completer(text, state):
-    """
-    Autocompleter function for readline.
-    
-    Args:
-        text: The current text being completed
-        state: The current state (0 for first call, increments for each match)
-    
-    Returns:
-        The next matching command or None when no more matches
-    """
+
     # List of commands to autocomplete
-    commands = ['echo', 'exit']
+    commands = [cmd + ' ' for cmd in BUILTINS]
     
     # Filter commands that start with the current text
     matches = []
@@ -269,6 +261,7 @@ def handle_external(command_name, args):
         print(f"{command_name}: command not found")
 
 def main():
+    setup_autocomplete()
     while True:
         sys.stdout.write("$ ")
         sys.stdout.flush()
