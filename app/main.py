@@ -42,11 +42,11 @@ def get_path_executables():
 def completer(text, state):
 
     # List of commands to autocomplete
-    commands = [cmd + '' for cmd in BUILTINS]
+    commands = [cmd + ' ' for cmd in BUILTINS]
     
     path_execs = list(get_path_executables()) 
     # Add a space to path executables too for consistency
-    path_execs = [cmd + '' for cmd in path_execs]
+    path_execs = [cmd + ' ' for cmd in path_execs]
     
     all_commands = sorted(list(set(commands + path_execs))) # Deduplicate and sort
     
@@ -300,10 +300,8 @@ def handle_external(command_name, args):
 def main():
     setup_autocomplete()
     while True:
-        sys.stdout.write("$ ")
-        sys.stdout.flush()
         try:
-            command = input()
+            command = input("$ ")
         except EOFError:
             break
             
