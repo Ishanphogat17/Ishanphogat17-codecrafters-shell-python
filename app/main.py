@@ -42,11 +42,15 @@ def get_path_executables():
 def completer(text, state):
 
     # List of commands to autocomplete
-    commands = [cmd + ' ' for cmd in BUILTINS]
+    commands = []
+    for cmd in BUILTINS:
+        commands.append(cmd + '')
     
     path_execs = list(get_path_executables()) 
     # Add a space to path executables too for consistency
-    path_execs = [cmd + ' ' for cmd in path_execs]
+    path_execs = []
+    for cmd in path_execs:
+        path_execs.append(cmd + '')
     
     all_commands = sorted(list(set(commands + path_execs))) # Deduplicate and sort
     
