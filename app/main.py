@@ -61,6 +61,9 @@ def completer(text, state):
     
     # Return the match corresponding to the current state
     if state < len(matches):
+        # If there is only one match, append a space so the user can type arguments immediately
+        if len(matches) == 1:
+            return matches[state] + ' '
         return matches[state]
     return None
 
