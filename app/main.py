@@ -300,10 +300,8 @@ def handle_external(command_name, args):
 def main():
     setup_autocomplete()
     while True:
-        sys.stdout.write("$ ")
-        sys.stdout.flush()
         try:
-            command = input()
+            command = input("$ ")
         except EOFError:
             break
             
