@@ -4,7 +4,7 @@ import subprocess
 import shlex
 import readline
 
-BUILTINS = ['echo', 'type', 'exit', 'pwd']
+BUILTINS = ['echo', 'type', 'exit', 'pwd', 'history']
 
 def execute_with_pipes(command_string):
     """Execute a command string that may contain pipes"""
