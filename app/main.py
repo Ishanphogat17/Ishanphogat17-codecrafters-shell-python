@@ -6,6 +6,46 @@ import readline
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd']
 
+def execute_with_pipes(command_string):
+    """Execute a command string that may contain pipes"""
+    if '|' not in command_string:
+        # No pipes, execute normally
+        subprocess.run(command_string, shell=True)
+        return
+    
+    # Split by pipes
+    commands = []
+    for cmd in command_string.split('|'):
+        if cmd.strip():
+            commands.append(cmd.strip())
+    
+    # Create pipeline
+    processes = []
+    
+    # Create all processes
+    for i, cmd in enumerate(commands):
+        if i == 0:
+            # First command
+            p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        elif i == len(commands) - 1:
+            # Last command
+            p = subprocess.Popen(cmd, shell=True, 
+                               stdin=processes[-1].stdout,
+                               stdout=None)  # Output to terminal
+        else:
+            # Middle command
+            p = subprocess.Popen(cmd, shell=True,
+                               stdin=processes[-1].stdout,
+                               stdout=subprocess.PIPE)
+        
+        processes.append(p)
+        if i > 0:
+            # Close previous stdout in current process
+            processes[i-1].stdout.close()
+    
+    # Wait for all processes
+    for p in processes:
+        p.wait()
 
 
 def get_path_executables():
@@ -317,6 +357,10 @@ def main():
         if any(op in command for op in ['2>', '>>', '>','1>']):
             stdout_stderr(command)
             continue  
+
+        if '|' in command:
+            execute_with_pipes(command)
+            continue
             
         parts = parse_arguments(command)
         if not parts:
