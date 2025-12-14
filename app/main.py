@@ -44,13 +44,13 @@ def completer(text, state):
     # List of commands to autocomplete
     commands = []
     for cmd in BUILTINS:
-        commands.append(cmd + '')
+        commands.append(cmd + ' ')
     
     path_execs = list(get_path_executables()) 
     # Add a space to path executables too for consistency
     path_execs = []
     for cmd in path_execs:
-        path_execs.append(cmd + '')
+        path_execs.append(cmd + ' ')
     
     all_commands = sorted(list(set(commands + path_execs))) # Deduplicate and sort
     
