@@ -5,7 +5,7 @@ import shlex
 import readline
 import atexit
 
-HISTORY_FILE = os.environ.get('HISTFILE')
+HISTORY_FILE = os.environ.get('HISTFILE') or os.path.expanduser("~/.python_shell_history")
 LAST_SAVED_INDEX = 0
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd', 'history']
