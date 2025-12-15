@@ -9,6 +9,24 @@ HISTORY_FILE = os.path.expanduser("~/.python_shell_history")
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd', 'history']
 
+def handle_history(args):
+    """Handles the history command."""
+    length = readline.get_current_history_length()
+    start_index = 1
+    
+    if args:
+        try:
+            n = int(args[0])
+            start_index = max(1, length - n + 1)
+        except ValueError:
+            print(f"history: {args[0]}: numeric argument required")
+            return
+
+    for i in range(start_index, length + 1):
+        # readline history is 1-indexed
+        item = readline.get_history_item(i)
+        print(f"{i} {item}")
+
 def setup_history():
     """Setup history file and load history from it."""
     if not os.path.exists(HISTORY_FILE):
@@ -220,13 +238,7 @@ def handle_cd(path):
     except FileNotFoundError:
         print(f"cd: {path}: No such file or directory")
 
-def handle_history(args):
-    """Handles the history command."""
-    length = readline.get_current_history_length()
-    for i in range(1, length + 1):
-        # readline history is 1-indexed
-        item = readline.get_history_item(i)
-        print(f"{i} {item}")
+
 
 def find_in_path(executable_name):
     """
