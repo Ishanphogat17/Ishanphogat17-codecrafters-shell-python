@@ -3,8 +3,22 @@ import os
 import subprocess
 import shlex
 import readline
+import atexit
+
+HISTORY_FILE = os.path.expanduser("~/.python_shell_history")
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd', 'history']
+
+def setup_history():
+    """Setup history file and load history from it."""
+    if not os.path.exists(HISTORY_FILE):
+        open(HISTORY_FILE, 'w').close()
+    readline.read_history_file(HISTORY_FILE)
+    atexit.register(save_history)
+
+def save_history():
+    """Save history to history file."""
+    readline.write_history_file(HISTORY_FILE)
 
 def execute_with_pipes(command_string):
     """Execute a command string that may contain pipes"""
@@ -206,6 +220,14 @@ def handle_cd(path):
     except FileNotFoundError:
         print(f"cd: {path}: No such file or directory")
 
+def handle_history(args):
+    """Handles the history command."""
+    length = readline.get_current_history_length()
+    for i in range(1, length + 1):
+        # readline history is 1-indexed
+        item = readline.get_history_item(i)
+        print(f"{i} {item}")
+
 def find_in_path(executable_name):
     """
     Searches for an executable in the directories listed in the PATH environment variable.
@@ -344,6 +366,7 @@ def handle_external(command_name, args):
         print(f"{command_name}: command not found")
 
 def main():
+    setup_history()
     setup_autocomplete()
     while True:
         try:
@@ -382,6 +405,8 @@ def main():
         elif exe_name == 'cd':
             path = args[0] if args else os.path.expanduser("~")
             handle_cd(path)
+        elif exe_name == 'history':
+            handle_history(args)
         else:
             handle_external(exe_name, args)
 
