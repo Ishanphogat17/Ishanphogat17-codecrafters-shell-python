@@ -23,6 +23,18 @@ def handle_history(args):
             print(f"history: {target_file}: No such file or directory")
             return
 
+    elif args and args[0] == '-w':
+        target_file = HISTORY_FILE
+        if len(args) > 1:
+            target_file = args[1]
+            
+        try:
+            readline.write_history_file(target_file)
+            return
+        except FileNotFoundError:
+            print(f"history: {target_file}: No such file or directory")
+            return
+
     length = readline.get_current_history_length()
     start_index = 1
     
