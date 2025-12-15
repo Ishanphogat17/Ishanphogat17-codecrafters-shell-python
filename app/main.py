@@ -91,10 +91,14 @@ def handle_history(args):
 def setup_history():
     """Setup history file and load history from it."""
     global LAST_SAVED_INDEX
-    if not os.path.exists(HISTORY_FILE):
-        open(HISTORY_FILE, 'w').close()
-    readline.read_history_file(HISTORY_FILE)
-    LAST_SAVED_INDEX = readline.get_current_history_length()
+    try:
+        if not os.path.exists(HISTORY_FILE):
+            open(HISTORY_FILE, 'w').close()
+        readline.read_history_file(HISTORY_FILE)
+        LAST_SAVED_INDEX = readline.get_current_history_length()
+    except (FileNotFoundError, OSError):
+        # Fail gracefully if history cannot be properly setup
+        pass
     atexit.register(save_history)
 
 def save_history():
