@@ -1,0 +1,29 @@
+echo "test history 1"
+history
+exit
+echo one
+echo two
+echo three
+history 2
+exit
+external
+history -r
+echo "test history 1"
+history
+exit
+echo one
+echo two
+echo three
+history 2
+exit
+external
+history 3
+exit
+history -r temp_test_hist.txt
+loaded command
+history
+exit
+echo "test append"
+history -a temp_append.txt
+echo "test append fallback"
+history -a temp_append.txt

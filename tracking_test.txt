@@ -1,0 +1,6 @@
+init data
+history -a tracking_test.txt
+echo "cmd 1"
+history -a tracking_test.txt
+echo "cmd 2"
+history -a tracking_test.txt

@@ -1,34 +1,56 @@
-[![progress-banner](https://backend.codecrafters.io/progress/shell/dc2e853c-5723-456c-9ac3-b2e835264d05)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# Python Shell Implementation
 
-This is a starting point for Python solutions to the
-["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
+This project implements a custom shell in Python, designed to mimic core functionalities of standard Unix shells like Bash or Zsh. It supports built-in commands, external program execution, piping, redirection, and persistent command history.
 
-In this challenge, you'll build your own POSIX compliant shell that's capable of
-interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
-REPLs, builtin commands, and more.
+## Features
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+### 1. Built-in Commands
+The shell supports the following built-in commands:
+- **`echo [args...]`**: Prints arguments to the standard output.
+- **`exit [n]`**: Exits the shell (optionally with a status code).
+- **`type [name]`**: Displays information about command type (builtin or external path).
+- **`pwd`**: Prints the current working directory.
+- **`cd [path]`**: Changes the current working directory. Supports `~` expansion.
+- **`history [n | -a/-r/-w file]`**: Manages command history.
 
-# Passing the first stage
+### 2. Command History
+The shell provides robust history management using `readline`:
+- **Persistence**: History is automatically saved to `~/.python_shell_history` or the file specified by the `HISTFILE` environment variable.
+- **Auto-load/save**: History is loaded on startup and saved on exit.
+- **Commands**:
+  - `history`: List full history.
+  - `history <n>`: List the last `<n>` commands.
+  - `history -a <file>`: Append new session commands to `<file>`.
+  - `history -r <file>`: Reload history from `<file>`.
+  - `history -w <file>`: Write current history to `<file>`.
 
-The entry point for your `shell` implementation is in `app/main.py`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
+### 3. Redirection
+Supports standard I/O redirection operators:
+- `>`: Overwrite standard output to a file.
+- `>>` or `1>>`: Append standard output to a file.
+- `2>`: Overwrite standard error to a file.
+- `2>>`: Append standard error to a file.
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
+### 4. Piping
+Basic support for chaining commands using pipes (`|`):
+- Connects the stdout of one command to the stdin of the next.
+- Works with both built-ins and external programs.
+
+### 5. Autocomplete
+- Tab completion is enabled for:
+  - Built-in commands.
+  - Executable files found in the system `PATH`.
+
+## Setup & specific behaviors
+- **Windows Support**: Includes fallbacks for `readline` functions like `append_history_file` which are not natively available on Windows.
+- **Robustness**: Gracefully handles invalid `HISTFILE` paths by falling back to defaults.
+
+## Usage
+Run the shell by executing the `main.py` script:
+```bash
+python app/main.py
 ```
-
-Time to move on to the next stage!
-
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `uv` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `app/main.py`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+Or with a custom history file:
+```bash
+HISTFILE=my_history.txt python app/main.py
+```
