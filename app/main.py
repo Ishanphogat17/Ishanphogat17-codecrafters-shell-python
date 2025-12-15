@@ -41,7 +41,19 @@ def handle_history(args):
             target_file = args[1]
             
         try:
-            readline.append_history_file(target_file)
+            n = readline.get_current_history_length()
+            try:
+                # Python 3.5+ on platforms with valid readline (Linux/Mac)
+                readline.append_history_file(n, target_file)
+            except AttributeError:
+                # Fallback for Windows or older Python
+                # We simply append 'n' items to the file manually.
+                # Note: This appends ALL current history, similar to append_history_file(n)
+                with open(target_file, 'a') as f:
+                    for i in range(1, n + 1):
+                        item = readline.get_history_item(i)
+                        if item:
+                            f.write(item + '\n')
             return
         except FileNotFoundError:
             print(f"history: {target_file}: No such file or directory")
