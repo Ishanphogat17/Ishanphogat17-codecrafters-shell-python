@@ -34,6 +34,19 @@ def handle_history(args):
         except FileNotFoundError:
             print(f"history: {target_file}: No such file or directory")
             return
+    
+    elif args and args[0] == '-a':
+        target_file = HISTORY_FILE
+        if len(args) > 1:
+            target_file = args[1]
+            
+        try:
+            readline.append_history_file(target_file)
+            return
+        except FileNotFoundError:
+            print(f"history: {target_file}: No such file or directory")
+            return
+
 
     length = readline.get_current_history_length()
     start_index = 1
