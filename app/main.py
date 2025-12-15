@@ -6,6 +6,7 @@ import readline
 import atexit
 
 HISTORY_FILE = os.path.expanduser("~/.python_shell_history")
+LAST_SAVED_INDEX = 0
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd', 'history']
 
@@ -40,20 +41,31 @@ def handle_history(args):
         if len(args) > 1:
             target_file = args[1]
             
+        global LAST_SAVED_INDEX
         try:
-            n = readline.get_current_history_length()
+            current_length = readline.get_current_history_length()
+            # Calculate how many new items since last save
+            # If current_length < LAST_SAVED_INDEX, something weird happened (clear?), reset.
+            if current_length < LAST_SAVED_INDEX:
+                 LAST_SAVED_INDEX = 0
+            
+            n_new = current_length - LAST_SAVED_INDEX
+            
+            if n_new <= 0:
+                return
+
             try:
                 # Python 3.5+ on platforms with valid readline (Linux/Mac)
-                readline.append_history_file(n, target_file)
+                readline.append_history_file(n_new, target_file)
+                LAST_SAVED_INDEX = current_length
             except AttributeError:
                 # Fallback for Windows or older Python
-                # We simply append 'n' items to the file manually.
-                # Note: This appends ALL current history, similar to append_history_file(n)
                 with open(target_file, 'a') as f:
-                    for i in range(1, n + 1):
+                    for i in range(LAST_SAVED_INDEX + 1, current_length + 1):
                         item = readline.get_history_item(i)
                         if item:
                             f.write(item + '\n')
+                LAST_SAVED_INDEX = current_length
             return
         except FileNotFoundError:
             print(f"history: {target_file}: No such file or directory")
@@ -78,9 +90,11 @@ def handle_history(args):
 
 def setup_history():
     """Setup history file and load history from it."""
+    global LAST_SAVED_INDEX
     if not os.path.exists(HISTORY_FILE):
         open(HISTORY_FILE, 'w').close()
     readline.read_history_file(HISTORY_FILE)
+    LAST_SAVED_INDEX = readline.get_current_history_length()
     atexit.register(save_history)
 
 def save_history():
