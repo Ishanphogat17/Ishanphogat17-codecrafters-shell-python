@@ -5,7 +5,7 @@ import shlex
 import readline
 import atexit
 
-HISTORY_FILE = os.path.expanduser("~/.python_shell_history")
+HIST_FILE = os.path.expanduser("~/.python_shell_history")
 LAST_SAVED_INDEX = 0
 
 BUILTINS = ['echo', 'type', 'exit', 'pwd', 'history']
@@ -13,7 +13,7 @@ BUILTINS = ['echo', 'type', 'exit', 'pwd', 'history']
 def handle_history(args):
     """Handles the history command."""
     if args and args[0] == '-r':
-        target_file = HISTORY_FILE
+        target_file = HIST_FILE
         if len(args) > 1:
             target_file = args[1]
             
@@ -25,7 +25,7 @@ def handle_history(args):
             return
 
     elif args and args[0] == '-w':
-        target_file = HISTORY_FILE
+        target_file = HIST_FILE
         if len(args) > 1:
             target_file = args[1]
             
@@ -37,7 +37,7 @@ def handle_history(args):
             return
     
     elif args and args[0] == '-a':
-        target_file = HISTORY_FILE
+        target_file = HIST_FILE
         if len(args) > 1:
             target_file = args[1]
             
