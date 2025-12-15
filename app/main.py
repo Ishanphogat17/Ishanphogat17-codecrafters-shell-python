@@ -91,15 +91,15 @@ def handle_history(args):
 def setup_history():
     """Setup history file and load history from it."""
     global LAST_SAVED_INDEX
-    if not os.path.exists(HISTORY_FILE):
-        open(HISTORY_FILE, 'w').close()
-    readline.read_history_file(HISTORY_FILE)
+    if not os.path.exists(HIST_FILE):
+        open(HIST_FILE, 'w').close()
+    readline.read_history_file(HIST_FILE)
     LAST_SAVED_INDEX = readline.get_current_history_length()
     atexit.register(save_history)
 
 def save_history():
     """Save history to history file."""
-    readline.write_history_file(HISTORY_FILE)
+    readline.write_history_file(HIST_FILE)
 
 def execute_with_pipes(command_string):
     """Execute a command string that may contain pipes"""
