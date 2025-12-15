@@ -12,11 +12,15 @@ BUILTINS = ['echo', 'type', 'exit', 'pwd', 'history']
 def handle_history(args):
     """Handles the history command."""
     if args and args[0] == '-r':
+        target_file = HISTORY_FILE
+        if len(args) > 1:
+            target_file = args[1]
+            
         try:
-            readline.read_history_file(HISTORY_FILE)
+            readline.read_history_file(target_file)
             return
         except FileNotFoundError:
-            # If no history file exists yet, just ignore
+            print(f"history: {target_file}: No such file or directory")
             return
 
     length = readline.get_current_history_length()
@@ -33,7 +37,7 @@ def handle_history(args):
     for i in range(start_index, length + 1):
         # readline history is 1-indexed
         item = readline.get_history_item(i)
-        print(f"{i} {item}")
+        print(f"{i:>5}  {item}")
 
 def setup_history():
     """Setup history file and load history from it."""
