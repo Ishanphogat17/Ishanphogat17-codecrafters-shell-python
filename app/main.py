@@ -1,7 +1,6 @@
 import sys
 import os
 import subprocess
-import shlex
 import readline
 import atexit
 
